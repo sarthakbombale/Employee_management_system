@@ -63,7 +63,7 @@ const createEmployee = async (req, res) => {
 const deleteEmployee = async (req, res) => {
     try {
         const { id } = req.params;
-        const [result] = await db.query(`DELETE FROM employee WHERE id = ?`, id);
+        const [result] = await db.query(`DELETE FROM employee WHERE id = ?`, [id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: "Employee not found" });
         }
@@ -72,10 +72,38 @@ const deleteEmployee = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: "Server error" })
     }
+};
+
+const updateEmployee = async (req, res) => {
+
+    try {
+        const { id } = req.params;
+        const { name, email, role, department } = req.body;
+
+        if (!name || !email || !role || !department) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        const [result] = await db.query(
+            `UPDATE employee SET name=?, email=?, role=?, department=? WHERE id = ?`,
+            [name, email, role, department, id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Employee not found" });
+        }
+
+        res.status(200).json({ message: "Employee updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" })
+    }
+
 }
 
 module.exports = {
     getEmployees,
     createEmployee,
-    deleteEmployee
+    deleteEmployee,
+    updateEmployee
 };
