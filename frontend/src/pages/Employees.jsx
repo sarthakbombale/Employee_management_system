@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import EmployeeTable from '../components/EmployeeTable'
-function Employees() {
+import EmployeeForm from '../components/EmployeeForm';
+
+function Employees({ fetchEmployees }) {
     const [employees, setEmployees] = useState([]);
 
 
@@ -22,6 +24,7 @@ function Employees() {
 
         <div>
             <h1>Employees</h1>
+            <EmployeeForm fetchEmployees={fetchEmployees} />
             <EmployeeTable employees={employees} />
 
         </div>
